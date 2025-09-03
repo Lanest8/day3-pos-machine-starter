@@ -9,6 +9,7 @@ public class PosMachine {
     public String printReceipt(List<String> barcodes) {
         List<Item> items = selectAllItems(barcodes);
         List<ReceiptItem> receiptItems = generateReceiptItems(items);
+        int total = calculateTotalCost(receiptItems);
         return null;
     }
 
@@ -48,4 +49,9 @@ public class PosMachine {
         return itemCounts;
     }
 
+    public int calculateTotalCost(List<ReceiptItem> receiptItems) {
+        return receiptItems.stream()
+                .mapToInt(ReceiptItem::getSubtotal)
+                .sum();
+    }
 }
