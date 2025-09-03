@@ -10,7 +10,7 @@ public class PosMachine {
         List<Item> items = selectAllItems(barcodes);
         List<ReceiptItem> receiptItems = generateReceiptItems(items);
         int total = calculateTotalCost(receiptItems);
-        return null;
+        return generateReceipt(receiptItems, total);
     }
 
     public List<Item> selectAllItems(List<String> barcodes) {
@@ -53,5 +53,19 @@ public class PosMachine {
         return receiptItems.stream()
                 .mapToInt(ReceiptItem::getSubtotal)
                 .sum();
+    }
+
+    public String generateReceipt(List<ReceiptItem> receiptItems, int total) {
+        StringBuilder receiptBuilder = new StringBuilder();
+        receiptBuilder.append("***<store earning no money>Receipt***\n");
+        for (ReceiptItem receiptItem : receiptItems) {
+            Item item = receiptItem.getItem();
+            receiptBuilder.append(String.format("Name: %s, Quantity: %d, Unit price: %d (yuan), Subtotal: %d (yuan)\n",
+                    item.getName(), receiptItem.getQuantity(), item.getPrice(), receiptItem.getSubtotal()));
+        }
+        receiptBuilder.append("----------------------\n");
+        receiptBuilder.append(String.format("Total: %d (yuan)\n", total));
+        receiptBuilder.append("**********************");
+        return receiptBuilder.toString();
     }
 }
