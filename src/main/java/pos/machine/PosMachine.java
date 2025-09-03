@@ -8,6 +8,7 @@ import static pos.machine.ItemsLoader.loadAllItems;
 public class PosMachine {
     public String printReceipt(List<String> barcodes) {
         List<Item> items = selectAllItems(barcodes);
+        List<ReceiptItem> receiptItems = generateReceiptItems(items);
         return null;
     }
 
@@ -30,4 +31,21 @@ public class PosMachine {
                 .findFirst()
                 .orElse(null);
     }
+
+
+    public List<ReceiptItem> generateReceiptItems(List<Item> items) {
+        Map<Item, Integer> itemCounts = generateItemsCountMap(items);
+        return itemCounts.entrySet().stream()
+                .map(entry -> new ReceiptItem(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    public static Map<Item, Integer> generateItemsCountMap(List<Item> items) {
+        Map<Item, Integer> itemCounts = new LinkedHashMap<>();
+        for (Item item : items) {
+            itemCounts.put(item, itemCounts.getOrDefault(item, 0) + 1);
+        }
+        return itemCounts;
+    }
+
 }
